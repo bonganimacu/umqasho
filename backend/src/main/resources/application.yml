@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: uqasho-api
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/umqasho_db}
+    username: ${DATABASE_USERNAME:uqasho}
+    password: ${DATABASE_PASSWORD:uqasho}
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:false}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  jackson:
+    default-property-inclusion: non_null
+server:
+  port: ${PORT:8082}
+  error:
+    include-message: never
+    include-stacktrace: never
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+uqasho:
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:Password@123}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,http://localhost:5178,http://localhost:5179,http://localhost:5180,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175,http://127.0.0.1:5176,http://127.0.0.1:5177,http://127.0.0.1:5178,http://127.0.0.1:5179,http://127.0.0.1:5180}
