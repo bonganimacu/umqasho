@@ -20,7 +20,12 @@ public class AuthService {
 
     public RegistrationResponse register(RegistrationRequest request, UserRole role) {
         String email = request.email().trim().toLowerCase();
-        String phone = request.phone().trim();
+        String phone = request.phone().replaceAll("[\\s-]", "");
+        if (phone.matches("^0[6-8][0-9]{8}$")) {
+            phone = "+27" + phone.substring(1);
+        } else if (phone.matches("^27[6-8][0-9]{8}$")) {
+            phone = "+" + phone;
+        }
         if (users.existsByEmailIgnoreCase(email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
         }

@@ -63,6 +63,12 @@ class SubscriptionAdminFlowIntegrationTest {
                 ))))
             .andExpect(status().isCreated());
 
+        mockMvc.perform(get("/api/admin/users")
+                .with(httpBasic("admin", "Password@123"))
+                .param("search", "subscription-user"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].email").value("subscription-user@example.com"));
+
         mockMvc.perform(post("/api/admin/subscriptions/plans")
                 .with(httpBasic("admin", "Password@123"))
                 .contentType(MediaType.APPLICATION_JSON)

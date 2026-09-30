@@ -119,6 +119,29 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    void registerLandlordAcceptsLocalSouthAfricanPhoneNumber() throws Exception {
+        mockMvc.perform(post("/api/auth/register/landlord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new RegistrationRequest(
+                    "Local",
+                    "Number",
+                    "local-phone-landlord@example.com",
+                    "071 234 5678",
+                    "Password@123",
+                    null,
+                    null
+                ))))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.email").value("local-phone-landlord@example.com"));
+
+        assertThat(users.findByEmailIgnoreCase("local-phone-landlord@example.com"))
+            .isPresent()
+            .get()
+            .extracting(user -> user.getPhone())
+            .isEqualTo("+27712345678");
+    }
+
+    @Test
     void adminDashboardAllowsLocalFrontendOrigin() throws Exception {
         mockMvc.perform(options("/api/admin/dashboard")
                 .header("Origin", "http://localhost:5176")

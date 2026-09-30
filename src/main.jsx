@@ -129,7 +129,7 @@ function MetricCard({ title, value, subtitle, icon: Icon, accent }) {
   )
 }
 
-function RegisterStep({ onContinue, form, setForm }) {
+function RegisterStep({ onContinue, form, setForm, error, submitting }) {
   const passwordStrength = form.password.length >= 12 ? 2 : form.password.length >= 8 ? 1 : 0
 
   return (
@@ -154,22 +154,12 @@ function RegisterStep({ onContinue, form, setForm }) {
           <div className="two-column-grid">
             <label className="field">
               <span>First Name *</span>
-              <input type="text" value={form.firstName} onChange={(event) => setForm({ ...form, firstName: event.target.value })} />
+              <input required autoComplete="given-name" type="text" value={form.firstName} onChange={(event) => setForm({ ...form, firstName: event.target.value })} />
             </label>
             <label className="field">
               <span>Last Name *</span>
-              <input type="text" value={form.lastName} onChange={(event) => setForm({ ...form, lastName: event.target.value })} />
+              <input required autoComplete="family-name" type="text" value={form.lastName} onChange={(event) => setForm({ ...form, lastName: event.target.value })} />
             </label>
-          </div>
-
-          <div className="photo-panel">
-            <div className="photo-preview">
-              <CircleUserRound size={52} />
-            </div>
-            <div className="photo-actions">
-              <button className="ghost-button" type="button"><Upload size={16} /> Upload Photo</button>
-              <button className="text-button inline" type="button">Remove Photo</button>
-            </div>
           </div>
         </section>
 
@@ -180,11 +170,11 @@ function RegisterStep({ onContinue, form, setForm }) {
           <div className="two-column-grid">
             <label className="field">
               <span>Email *</span>
-              <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+              <input required autoComplete="email" type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
             </label>
             <label className="field">
               <span>Phone Number *</span>
-              <input type="tel" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
+              <input required autoComplete="tel" type="tel" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
             </label>
           </div>
           <p className="helper-text">These details are private. They are not shown to tenants.</p>
@@ -197,77 +187,18 @@ function RegisterStep({ onContinue, form, setForm }) {
           <div className="two-column-grid">
             <label className="field">
               <span>Password *</span>
-              <input type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
+              <input required autoComplete="new-password" type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
             </label>
             <label className="field">
               <span>Confirm Password *</span>
-              <input type="password" value={form.confirmPassword} onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })} />
+              <input required autoComplete="new-password" type="password" value={form.confirmPassword} onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })} />
             </label>
           </div>
           <StrengthMeter value={passwordStrength} />
         </section>
 
         <section className="form-section">
-          <div className="section-title-row">
-            <h3>Landlord type</h3>
-          </div>
-          <div className="segmented-row">
-            {['Property Owner', 'Landlord', 'Property Agent'].map((type) => (
-              <label key={type} className={`option-set ${form.landlordType === type ? 'selected' : ''}`}>
-                <input type="radio" name="landlordType" checked={form.landlordType === type} onChange={() => setForm({ ...form, landlordType: type })} />
-                <span>{type}</span>
-              </label>
-            ))}
-          </div>
-          {form.landlordType === 'Property Agent' && (
-            <div className="two-column-grid margin-top">
-              <label className="field">
-                <span>Business / Agency Name</span>
-                <input type="text" value={form.businessName} onChange={(event) => setForm({ ...form, businessName: event.target.value })} />
-              </label>
-              <label className="field">
-                <span>Business Information</span>
-                <input type="text" value={form.businessInfo} onChange={(event) => setForm({ ...form, businessInfo: event.target.value })} />
-              </label>
-            </div>
-          )}
-        </section>
-
-        <section className="form-section">
-          <div className="section-title-row">
-            <h3>Address</h3>
-          </div>
-          <div className="three-column-grid">
-            <label className="field">
-              <span>Province</span>
-              <input type="text" value={form.province} onChange={(event) => setForm({ ...form, province: event.target.value })} />
-            </label>
-            <label className="field">
-              <span>City</span>
-              <input type="text" value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} />
-            </label>
-            <label className="field">
-              <span>Area / Community</span>
-              <input type="text" value={form.area} onChange={(event) => setForm({ ...form, area: event.target.value })} />
-            </label>
-          </div>
-        </section>
-
-        <section className="form-section">
-          <div className="section-title-row">
-            <h3>Document verification</h3>
-          </div>
-          <div className="two-column-grid">
-            <label className="field upload-field">
-              <span>ID Document *</span>
-              <span className="upload-box"><Upload size={18} /> {form.idDocument || 'Choose private ID file'}<input type="file" accept="image/*,.pdf" onChange={(event) => setForm({ ...form, idDocument: event.target.files?.[0]?.name || '' })} /></span>
-            </label>
-            <label className="field upload-field">
-              <span>Proof of Residence *</span>
-              <span className="upload-box"><Upload size={18} /> {form.proofDocument || 'Choose private address file'}<input type="file" accept="image/*,.pdf" onChange={(event) => setForm({ ...form, proofDocument: event.target.files?.[0]?.name || '' })} /></span>
-            </label>
-          </div>
-          <p className="helper-text">Your documents are private and can only be accessed by authorized UMQASHO administrators for verification.</p>
+          <p className="helper-text">This creates your account. Identity documents are not uploaded by this form; an administrator must verify your details before approval.</p>
         </section>
 
         <section className="form-section">
@@ -279,23 +210,23 @@ function RegisterStep({ onContinue, form, setForm }) {
       </div>
 
       <div className="sticky-footer">
-        <button className="ghost-button" type="button">Save draft</button>
-        <button className="primary-button" type="button" onClick={onContinue}>Create Account</button>
+        {error && <p className="location-error" role="alert">{error}</p>}
+        <button className="primary-button" type="button" disabled={submitting} onClick={onContinue}>{submitting ? 'Creating account...' : 'Create Account'}</button>
       </div>
     </div>
   )
 }
 
-function AccountSuccessStep({ onContinue }) {
+function AccountSuccessStep({ onContinue, firstName }) {
   return (
     <div className="success-wrap onboarding-card">
       <div className="success-icon"><CheckCircle2 size={64} /></div>
       <p className="eyebrow">Account created</p>
-      <h2>Welcome to UMQASHO, Thabo.</h2>
-      <p className="lead-copy">Your landlord account has been created.</p>
+      <h2>Welcome to UMQASHO, {firstName}.</h2>
+      <p className="lead-copy">Your account has been created and is awaiting admin verification.</p>
       <div className="check-list-row">
-        <span><Check size={14} /> Account created</span>
-        <span><Check size={14} /> Profile created</span>
+        <span><Check size={14} /> Account saved</span>
+        <span><Check size={14} /> Landlord role assigned</span>
         <span className="pending"><Check size={14} /> Verification pending</span>
       </div>
       <button className="primary-button" type="button" onClick={onContinue}>Continue</button>
@@ -316,26 +247,9 @@ function VerificationStep({ onContinue }) {
 
       <ProgressSteps currentStep={1} />
 
-      <div className="verification-grid">
-        <div className="mini-status-card">
-          <div className="mini-status-top">
-            <strong>ID Document</strong>
-            <span className="status-tag success">Uploaded</span>
-          </div>
-          <p>Secure copy received and queued for review.</p>
-        </div>
-        <div className="mini-status-card">
-          <div className="mini-status-top">
-            <strong>Proof of Residence</strong>
-            <span className="status-tag success">Uploaded</span>
-          </div>
-          <p>Address proof is protected and only reviewed by admins.</p>
-        </div>
-      </div>
-
       <div className="info-box">
         <ShieldCheck size={18} />
-        <p>Your documents are being reviewed by UMQASHO. You can continue setting up your property while verification is pending.</p>
+        <p>Your registration is in the admin queue. Identity documents are not collected in this version, so approval must follow an independent verification.</p>
       </div>
 
       <div className="sticky-footer">
@@ -359,6 +273,8 @@ function PropertyLocationPicker({ form, setForm }) {
   const mapElementRef = useRef(null)
   const mapRef = useRef(null)
   const markerRef = useRef(null)
+  const formRef = useRef(form)
+  formRef.current = form
   const [query, setQuery] = useState(form.confirmedAddress || `${form.area}, ${form.city}, ${form.province}`)
   const [location, setLocation] = useState(form.locationConfirmed ? {
     area: form.area,
@@ -408,10 +324,33 @@ function PropertyLocationPicker({ form, setForm }) {
         const lat = event.latLng.lat()
         const lng = event.latLng.lng()
         marker.setPosition(event.latLng)
-        setLocation((current) => current ? { ...current, latitude: lat, longitude: lng } : null)
+        setLocation((current) => {
+          const currentForm = formRef.current
+          const address = current?.address || currentForm.confirmedAddress || searchRef.current?.value.trim() || 'Selected map location'
+          return {
+            area: current?.area || currentForm.area || 'Selected map area',
+            city: current?.city || currentForm.city,
+            province: current?.province || currentForm.province,
+            address,
+            latitude: lat,
+            longitude: lng,
+          }
+        })
       })
       dragListener = marker.addListener('dragend', (event) => {
-        setLocation((current) => current ? { ...current, latitude: event.latLng.lat(), longitude: event.latLng.lng() } : null)
+        const lat = event.latLng.lat()
+        const lng = event.latLng.lng()
+        setLocation((current) => {
+          const currentForm = formRef.current
+          return {
+            area: current?.area || currentForm.area || 'Selected map area',
+            city: current?.city || currentForm.city,
+            province: current?.province || currentForm.province,
+            address: current?.address || currentForm.confirmedAddress || `Map location (${lat.toFixed(5)}, ${lng.toFixed(5)})`,
+            latitude: lat,
+            longitude: lng,
+          }
+        })
       })
       setMapsState('ready')
     }
@@ -449,13 +388,13 @@ function PropertyLocationPicker({ form, setForm }) {
   }
   const confirmLocation = () => {
     if (!location) return
-    setForm({ ...form, area: location.area, city: location.city, province: location.province, latitude: location.latitude, longitude: location.longitude, confirmedAddress: location.address, locationConfirmed: true })
+    setForm((current) => ({ ...current, area: location.area, city: location.city, province: location.province, latitude: location.latitude, longitude: location.longitude, confirmedAddress: location.address, locationConfirmed: true }))
   }
 
   return (
     <div className="map-card">
       <div className="map-topbar location-search-row">
-        <label className="field location-search-field"><span>Search location</span><input ref={searchRef} value={query} onChange={(event) => { setQuery(event.target.value); setLocation(null) }} placeholder="Search area, city or address" autoComplete="off" /></label>
+        <label className="field location-search-field"><span>Search location</span><input ref={searchRef} value={query} onChange={(event) => { setQuery(event.target.value); setLocation(null); setForm((current) => ({ ...current, locationConfirmed: false, confirmedAddress: '', latitude: null, longitude: null })) }} placeholder="Search area, city or address" autoComplete="off" /></label>
         <a className="ghost-button small maps-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location?.address || query)}`} target="_blank" rel="noreferrer">Open Google Maps</a>
       </div>
       {mapsState !== 'ready' && suggestions.length > 0 && <div className="location-suggestions" role="listbox">{suggestions.map((item) => <button type="button" role="option" key={item.area} onClick={() => selectArea(item)}><MapPin size={15} /><span><strong>{item.area}</strong><small>{item.city}, {item.province}</small></span></button>)}</div>}
@@ -543,7 +482,7 @@ function PropertyStep({ onContinue, form, setForm }) {
           </div>
           <div className="tag-list">
             {['Taxi Rank', 'Train Station', 'Bus Station', 'Gautrain', 'Mall', 'School', 'University', 'Hospital', 'Shopping Centre', 'Work / business area', 'Other'].map((item) => (
-              <button key={item} type="button" className="tag-pill">{item}</button>
+              <button key={item} type="button" aria-pressed={form.nearbyInformation.includes(item)} className={`tag-pill ${form.nearbyInformation.includes(item) ? 'selected' : ''}`} onClick={() => setForm((current) => ({ ...current, nearbyInformation: current.nearbyInformation.includes(item) ? current.nearbyInformation.filter((entry) => entry !== item) : [...current.nearbyInformation, item] }))}>{item}</button>
             ))}
           </div>
         </section>
@@ -1122,102 +1061,221 @@ function GuestAuthGate({ action, onLogin, onRegister, onClose }) {
 }
 
 function TenantRegistration({ onSubmit, onLogin, onBrowse }) {
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const submitRegistration = async (event) => {
+    event.preventDefault()
+    setError('')
+    setSubmitting(true)
+    try {
+      await onSubmit(new FormData(event.currentTarget))
+    } catch (registrationError) {
+      setError(registrationError.message || 'Unable to create your account. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <div className="tenant-register-page">
-      <form className="tenant-register-card" onSubmit={onSubmit}>
+      <form className="tenant-register-card" onSubmit={submitRegistration}>
         <button className="text-button inline" type="button" onClick={onBrowse}>← Back to browsing</button>
         <p className="eyebrow">Tenant account</p>
         <h1>Create your free account</h1>
         <div className="two-column-grid">
-          <label className="field"><span>First name *</span><input required autoComplete="given-name" /></label>
-          <label className="field"><span>Last name *</span><input required autoComplete="family-name" /></label>
-          <label className="field"><span>Email *</span><input required type="email" autoComplete="email" /></label>
-          <label className="field"><span>Phone *</span><input required type="tel" autoComplete="tel" /></label>
-          <label className="field"><span>Password *</span><input required type="password" minLength="8" autoComplete="new-password" /></label>
-          <label className="field"><span>Profile photo (optional)</span><input type="file" accept="image/*" /></label>
-          <label className="field"><span>Occupation</span><input /></label>
-          <label className="field"><span>General location</span><input placeholder="Area or city" /></label>
-          <label className="field"><span>Number of occupants</span><input type="number" min="1" defaultValue="1" /></label>
-          <label className="field"><span>Monthly budget</span><input type="number" min="0" /></label>
-          <label className="field"><span>Preferred areas</span><input placeholder="Separate areas with commas" /></label>
-          <label className="field"><span>Preferred room type</span><select><option>Any room type</option><option>Private Room</option><option>Shared Room</option><option>Bachelor Flat</option><option>Back Room</option></select></label>
-          <label className="field"><span>Move-in date</span><input type="date" /></label>
+          <label className="field"><span>First name *</span><input required name="firstName" autoComplete="given-name" /></label>
+          <label className="field"><span>Last name *</span><input required name="lastName" autoComplete="family-name" /></label>
+          <label className="field"><span>Email *</span><input required name="email" type="email" autoComplete="email" /></label>
+          <label className="field"><span>Phone *</span><input required name="phone" type="tel" pattern="^(?:\\+?27\\s?0?[6-8](?:[0-9][\\s-]?){7}[0-9]|0[6-8](?:[0-9][\\s-]?){7}[0-9])$" title="Enter a valid South African mobile number, for example 071 234 5678 or +27 71 234 5678" autoComplete="tel" /></label>
+          <label className="field"><span>Password *</span><input required name="password" type="password" minLength="8" maxLength="72" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,72}" title="Use 8-72 characters with uppercase, lowercase, number, and symbol" autoComplete="new-password" /></label>
         </div>
-        <label className="field"><span>About you</span><textarea rows="3" placeholder="A little about yourself" /></label>
-        <label className="field"><span>Tenant bio</span><textarea rows="3" placeholder="Share details that help landlords understand your rental needs" /></label>
-        <fieldset className="tenant-amenities"><legend>Preferred amenities</legend>{['Wi-Fi', 'Parking', 'Private bathroom', 'Furnished', 'Laundry', 'Security'].map((amenity) => <label key={amenity}><input type="checkbox" name="preferredAmenities" value={amenity} />{amenity}</label>)}</fieldset>
+        <p className="helper-text">Your account details are saved now. Rental preferences can be added after profile setup is available.</p>
         <label className="checkbox-row tenant-terms"><input type="checkbox" required /><span>I accept the Terms and Privacy Policy.</span></label>
-        <button className="primary-button auth-button" type="submit">Create account</button>
+        {error && <p className="location-error" role="alert">{error}</p>}
+        <button className="primary-button auth-button" type="submit" disabled={submitting}>{submitting ? 'Creating account...' : 'Create account'}</button>
         <p className="tenant-register-login">Already registered? <button className="text-button inline" type="button" onClick={onLogin}>Log in</button></p>
       </form>
     </div>
   )
 }
 
+function AdminSubscriptionsPanel({ API_BASE_URL, authHeader }) {
+  const [plans, setPlans] = useState([])
+  const [subscriptions, setSubscriptions] = useState([])
+  const [users, setUsers] = useState([])
+  const [roleFilter, setRoleFilter] = useState('LANDLORD')
+  const [search, setSearch] = useState('')
+  const [planName, setPlanName] = useState('')
+  const [selectedUserId, setSelectedUserId] = useState('')
+  const [form, setForm] = useState({ name: '', price: '', billingCycle: 'MONTHLY', description: '' })
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+
+  const loadPlansAndSubscriptions = async () => {
+    const [plansResponse, subscriptionsResponse] = await Promise.all([
+      fetch(`${API_BASE_URL}/api/admin/subscriptions/plans`, { headers: { Authorization: authHeader } }),
+      fetch(`${API_BASE_URL}/api/admin/subscriptions`, { headers: { Authorization: authHeader } }),
+    ])
+    if (!plansResponse.ok || !subscriptionsResponse.ok) throw new Error('Unable to load subscription data.')
+    const [plansData, subscriptionsData] = await Promise.all([plansResponse.json(), subscriptionsResponse.json()])
+    setPlans(plansData)
+    setSubscriptions(subscriptionsData)
+    setPlanName((current) => current || plansData[0]?.name || '')
+  }
+
+  const loadUsers = async (role = roleFilter, query = search) => {
+    const params = new URLSearchParams({ role })
+    if (query.trim()) params.set('search', query.trim())
+    const response = await fetch(`${API_BASE_URL}/api/admin/users?${params}`, { headers: { Authorization: authHeader } })
+    if (!response.ok) throw new Error('Unable to search platform users.')
+    const userData = await response.json()
+    setUsers(userData)
+    setSelectedUserId((current) => userData.some((user) => user.id === current) ? current : userData[0]?.id || '')
+  }
+
+  useEffect(() => {
+    Promise.all([loadPlansAndSubscriptions(), loadUsers()])
+      .catch((loadError) => setError(loadError.message || 'Unable to load subscription management.'))
+      .finally(() => setLoading(false))
+  }, [API_BASE_URL, authHeader])
+
+  const createPlan = async (event) => {
+    event.preventDefault()
+    setError('')
+    setNotice('')
+    setSubmitting(true)
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/subscriptions/plans`, {
+        method: 'POST',
+        headers: { Authorization: authHeader, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, price: Number(form.price) }),
+      })
+      if (!response.ok) throw new Error(response.status === 409 ? 'A plan with this name already exists.' : 'Could not create the subscription plan. Check the name, price, and description.')
+      const created = await response.json()
+      setForm({ name: '', price: '', billingCycle: 'MONTHLY', description: '' })
+      setPlanName(created.name)
+      setNotice('Subscription plan created.')
+      await loadPlansAndSubscriptions()
+    } catch (submitError) {
+      setError(submitError.message || 'Could not create the subscription plan.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const assignPlan = async (event) => {
+    event.preventDefault()
+    if (!selectedUserId || !planName) return
+    setError('')
+    setNotice('')
+    setSubmitting(true)
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/subscriptions/users/${selectedUserId}/assign?planName=${encodeURIComponent(planName)}`, {
+        method: 'POST',
+        headers: { Authorization: authHeader },
+      })
+      if (!response.ok) throw new Error('Could not assign this plan. Refresh the user and plan lists, then try again.')
+      setNotice('Subscription assigned.')
+      await loadPlansAndSubscriptions()
+    } catch (submitError) {
+      setError(submitError.message || 'Could not assign this plan.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="admin-grid two-up">
+      <section className="admin-panel">
+        <div className="section-header compact-header"><div><p className="eyebrow">Billing controls</p><h2>Create a plan</h2></div></div>
+        <form className="form-layout" onSubmit={createPlan}>
+          <label className="field"><span>Plan name *</span><input required maxLength="120" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
+          <div className="two-column-grid">
+            <label className="field"><span>Price (ZAR) *</span><input required type="number" min="0.01" step="0.01" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} /></label>
+            <label className="field"><span>Billing cycle *</span><select value={form.billingCycle} onChange={(event) => setForm({ ...form, billingCycle: event.target.value })}><option value="MONTHLY">Monthly</option><option value="YEARLY">Yearly</option></select></label>
+          </div>
+          <label className="field"><span>Description *</span><textarea required maxLength="500" rows="3" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} /></label>
+          <button className="primary-button" type="submit" disabled={submitting}>{submitting ? 'Saving...' : 'Create plan'}</button>
+        </form>
+        <div className="table-card">
+          <table><thead><tr><th>Plan</th><th>Price</th><th>Cycle</th></tr></thead><tbody>
+            {plans.map((plan) => <tr key={plan.id}><td>{plan.name}</td><td>R{Number(plan.price).toLocaleString('en-ZA')}</td><td>{plan.billingCycle}</td></tr>)}
+            {plans.length === 0 && <tr><td colSpan="3">No plans have been created.</td></tr>}
+          </tbody></table>
+        </div>
+      </section>
+
+      <section className="admin-panel">
+        <div className="section-header compact-header"><div><p className="eyebrow">Account management</p><h2>Assign a subscription</h2></div></div>
+        <form className="form-layout" onSubmit={assignPlan}>
+          <div className="two-column-grid">
+            <label className="field"><span>Account type</span><select value={roleFilter} onChange={(event) => { setRoleFilter(event.target.value); loadUsers(event.target.value, search).catch((loadError) => setError(loadError.message)) }}><option value="LANDLORD">Landlords</option><option value="TENANT">Tenants</option></select></label>
+            <label className="field"><span>Search name or email</span><input value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+          </div>
+          <button className="ghost-button" type="button" onClick={() => loadUsers().catch((loadError) => setError(loadError.message))}>Find accounts</button>
+          <label className="field"><span>Account *</span><select required value={selectedUserId} onChange={(event) => setSelectedUserId(event.target.value)}><option value="">Select an account</option>{users.map((user) => <option key={user.id} value={user.id}>{user.firstName} {user.lastName} · {user.email} · {user.status}</option>)}</select></label>
+          <label className="field"><span>Plan *</span><select required value={planName} onChange={(event) => setPlanName(event.target.value)}><option value="">Select a plan</option>{plans.map((plan) => <option key={plan.id} value={plan.name}>{plan.name} · R{Number(plan.price).toLocaleString('en-ZA')} / {plan.billingCycle.toLowerCase()}</option>)}</select></label>
+          <button className="primary-button" type="submit" disabled={submitting || !plans.length || !selectedUserId}>{submitting ? 'Assigning...' : 'Assign plan'}</button>
+        </form>
+        <div className="table-card">
+          <table><thead><tr><th>Account ID</th><th>Plan</th><th>Status</th><th>Started</th></tr></thead><tbody>
+            {subscriptions.map((subscription) => <tr key={subscription.id}><td>{subscription.userId}</td><td>{subscription.planName}</td><td>{subscription.status}</td><td>{new Date(subscription.startedAt).toLocaleDateString('en-ZA')}</td></tr>)}
+            {subscriptions.length === 0 && <tr><td colSpan="4">No subscriptions have been assigned.</td></tr>}
+          </tbody></table>
+        </div>
+      </section>
+      {loading && <div className="empty-state compact"><p>Loading subscription data...</p></div>}
+      {error && <p className="location-error" role="alert">{error}</p>}
+      {notice && <p role="status">{notice}</p>}
+    </div>
+  )
+}
+
 function AdminDashboardPage({ onLogout, adminCredentials }) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8082'
+  const password = adminCredentials?.password || 'Password@123'
+  const authHeader = `Basic ${btoa(`admin:${password}`)}`
   const [dashboard, setDashboard] = useState(null)
   const [verifications, setVerifications] = useState([])
   const [selectedLandlord, setSelectedLandlord] = useState(null)
   const [decisionReason, setDecisionReason] = useState('')
+  const [activeSection, setActiveSection] = useState('Dashboard')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const loadAdminData = async () => {
-    const username = 'admin'
-    const password = adminCredentials?.password || 'Password@123'
-    const authHeader = `Basic ${btoa(`${username}:${password}`)}`
-
     const [dashboardResponse, verificationResponse] = await Promise.all([
       fetch(`${API_BASE_URL}/api/admin/dashboard`, { headers: { Authorization: authHeader } }),
       fetch(`${API_BASE_URL}/api/admin/verifications`, { headers: { Authorization: authHeader } }),
     ])
-
-    if (!dashboardResponse.ok || !verificationResponse.ok) {
-      throw new Error('Unable to load admin data.')
-    }
-
-    const [dashboardJson, verificationJson] = await Promise.all([
-      dashboardResponse.json(),
-      verificationResponse.json(),
-    ])
-
-    setDashboard(dashboardJson)
-    setVerifications(verificationJson || [])
-    setSelectedLandlord((current) => {
-      if (!verificationJson || verificationJson.length === 0) return null
-      if (current && verificationJson.some((item) => item.id === current.id)) return current
-      return verificationJson[0]
-    })
+    if (!dashboardResponse.ok || !verificationResponse.ok) throw new Error('Unable to load admin data. Check the admin credentials and backend connection.')
+    const [dashboardData, verificationData] = await Promise.all([dashboardResponse.json(), verificationResponse.json()])
+    setDashboard(dashboardData)
+    setVerifications(verificationData || [])
+    setSelectedLandlord((current) => verificationData?.find((item) => item.id === current?.id) || verificationData?.[0] || null)
+    setError('')
   }
 
   useEffect(() => {
     loadAdminData()
       .catch((fetchError) => setError(fetchError.message || 'We could not load the admin dashboard.'))
       .finally(() => setLoading(false))
-  }, [API_BASE_URL, adminCredentials])
+  }, [API_BASE_URL, authHeader])
 
   const submitDecision = async (landlordId, decision, reason) => {
-    const username = 'admin'
-    const password = adminCredentials?.password || 'Password@123'
-    const authHeader = `Basic ${btoa(`${username}:${password}`)}`
-
     setSubmitting(true)
+    setError('')
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/verifications/${landlordId}`, {
         method: 'PUT',
-        headers: {
-          Authorization: authHeader,
-          'Content-Type': 'application/json',
-        },
+        headers: { Authorization: authHeader, 'Content-Type': 'application/json' },
         body: JSON.stringify({ decision, reason: reason || '' }),
       })
-
-      if (!response.ok) {
-        throw new Error('Decision could not be saved.')
-      }
-
+      if (!response.ok) throw new Error(response.status === 400 ? 'Add a reason before rejecting a landlord.' : 'Decision could not be saved.')
       await loadAdminData()
       setDecisionReason('')
     } catch (decisionError) {
@@ -1227,24 +1285,13 @@ function AdminDashboardPage({ onLogout, adminCredentials }) {
     }
   }
 
-  const formatCurrency = (value) => `R${Number(value || 0).toLocaleString('en-ZA')}`
-
-  const summaryMetrics = [
-    { label: 'Total users', value: dashboard?.totalUsers ?? 0, delta: '+12.4%' },
-    { label: 'Total tenants', value: dashboard?.totalTenants ?? 0, delta: '+8.1%' },
-    { label: 'Total landlords', value: dashboard?.totalLandlords ?? 0, delta: '+6.3%' },
-    { label: 'Verified landlords', value: dashboard?.verifiedLandlords ?? 0, delta: '+2.1%' },
-    { label: 'Pending verifications', value: dashboard?.pendingVerifications ?? 0, delta: 'Needs review' },
-    { label: 'Monthly revenue', value: formatCurrency(dashboard?.monthlyRevenue ?? 0), delta: '+R18.4k' },
-  ]
-
-  const chartData = [58, 74, 68, 82, 97, 77, 90]
-  const quickActions = ['Verify landlords', 'Review reports', 'Create subscription plan', 'View payments', 'Manage listings', 'Manage users']
-  const recentActivity = [
-    { title: 'New landlord verification submitted', actor: 'Lerato Ndlovu', time: '2 hours ago', status: 'Pending' },
-    { title: 'Tenant saved a room', actor: 'Aphiwe Mokoena', time: '4 hours ago', status: 'Interested' },
-    { title: 'Subscription payment received', actor: 'Mandla Holdings', time: 'Today', status: 'Paid' },
-    { title: 'Listing reported', actor: 'System flag', time: 'Yesterday', status: 'Review' },
+  const metrics = [
+    { label: 'Total users', value: dashboard?.totalUsers ?? 0 },
+    { label: 'Tenants', value: dashboard?.totalTenants ?? 0 },
+    { label: 'Landlords', value: dashboard?.totalLandlords ?? 0 },
+    { label: 'Verified landlords', value: dashboard?.verifiedLandlords ?? 0 },
+    { label: 'Pending review', value: dashboard?.pendingVerifications ?? 0 },
+    { label: 'Rejected applications', value: dashboard?.rejectedVerifications ?? 0 },
   ]
 
   return (
@@ -1252,263 +1299,96 @@ function AdminDashboardPage({ onLogout, adminCredentials }) {
       <header className="admin-topbar">
         <div className="admin-brand-lockup" aria-label="UMQASHO admin system logo">
           <img className="admin-system-logo" src="/umqasho-logo-transparent.png" alt="UMQASHO system logo" />
-          <span className="admin-brand-label">ADMIN</span>
         </div>
-
         <div className="admin-topbar-actions">
-          <button className="ghost-button small" type="button">Export</button>
+          <button className="ghost-button small" type="button" disabled={loading} onClick={() => { setLoading(true); loadAdminData().catch((fetchError) => setError(fetchError.message)).finally(() => setLoading(false)) }}>Refresh</button>
           <button className="ghost-button" type="button" onClick={onLogout}>Log out</button>
         </div>
       </header>
 
       <main className="admin-main">
         <div className="page-header admin-header-row">
-          <div>
-            <p className="eyebrow">Platform control</p>
-            <h1>UMQASHO admin dashboard</h1>
-            <p>Overview of users, landlords, verification, subscriptions and property activity.</p>
-          </div>
-          <div className="header-pill-wrap">
-            <span className="pill neutral">Live</span>
-            <span className="pill accent">Premium operator</span>
-          </div>
+          <div><p className="eyebrow">Platform control</p><h1>UMQASHO admin dashboard</h1><p>Live user counts, landlord verification, and subscription controls.</p></div>
         </div>
 
         <nav className="admin-primary-nav" aria-label="Admin sections">
-          {['Dashboard', 'Users', 'Landlords', 'Tenants', 'Properties', 'Listings', 'Verification', 'Subscriptions', 'Payments', 'Reports'].map((item) => (
-            <button key={item} className={`admin-nav-item ${item === 'Dashboard' ? 'active' : ''}`} type="button">{item}</button>
+          {['Dashboard', 'Verification', 'Subscriptions'].map((item) => (
+            <button key={item} className={`admin-nav-item ${activeSection === item ? 'active' : ''}`} type="button" onClick={() => setActiveSection(item)}>{item}</button>
           ))}
         </nav>
 
         {loading && <div className="empty-state compact"><p>Loading platform data...</p></div>}
         {error && <p className="location-error" role="alert">{error}</p>}
 
-        {!loading && (
+        {!loading && activeSection === 'Dashboard' && (
           <>
             <section className="admin-metrics" aria-label="Platform summary metrics">
-              {summaryMetrics.map((metric) => (
-                <article key={metric.label} className="admin-metric-card">
-                  <span>{metric.label}</span>
-                  <strong>{metric.value}</strong>
-                  <small>{metric.delta}</small>
-                </article>
-              ))}
+              {metrics.map((metric) => <article key={metric.label} className="admin-metric-card"><span>{metric.label}</span><strong>{metric.value}</strong></article>)}
             </section>
-
-            <div className="admin-grid two-up">
-              <section className="admin-panel">
-                <div className="section-header compact-header">
-                  <div>
-                    <p className="eyebrow">Platform analytics</p>
-                    <h2>Growth overview</h2>
-                  </div>
-                  <div className="metric-filter">
-                    <button type="button" className="ghost-button small">7 days</button>
-                  </div>
-                </div>
-
-                <div className="bar-chart" aria-label="Platform growth chart">
-                  {chartData.map((value, index) => (
-                    <div key={index} className="bar-column">
-                      <span className="bar-value">{value}%</span>
-                      <span className="bar-track"><span className="bar-fill" style={{ height: `${value}%` }} /></span>
-                      <small>{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'][index]}</small>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className="admin-panel">
-                <div className="section-header compact-header">
-                  <div>
-                    <p className="eyebrow">Quick actions</p>
-                    <h2>Operations</h2>
-                  </div>
-                </div>
-
-                <div className="quick-action-grid">
-                  {quickActions.map((action) => (
-                    <button key={action} type="button" className="quick-action-chip">{action}</button>
-                  ))}
-                </div>
-              </section>
-            </div>
-
-            <div className="admin-grid two-up">
-              <section className="admin-panel">
-                <div className="section-header compact-header">
-                  <div>
-                    <p className="eyebrow">Verification queue</p>
-                    <h2>Landlord approvals</h2>
-                  </div>
-                </div>
-
-                {verifications.length === 0 ? (
-                  <div className="empty-state"><p>No landlord verification requests at the moment.</p></div>
-                ) : (
-                  <div className="admin-queue-layout">
-                    <div className="table-card">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {verifications.map((verification) => (
-                            <tr key={verification.id} className={selectedLandlord?.id === verification.id ? 'selected-review-row' : ''} onClick={() => setSelectedLandlord(verification)}>
-                              <td>{verification.firstName} {verification.lastName}</td>
-                              <td>{verification.email}</td>
-                              <td><span className="status-tag warning">{verification.status}</span></td>
-                              <td>{new Date(verification.submittedAt || verification.createdAt).toLocaleDateString('en-ZA')}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {selectedLandlord && (
-                      <div className="admin-verification-panel">
-                        <h3>{selectedLandlord.firstName} {selectedLandlord.lastName}</h3>
-                        <p>{selectedLandlord.email}</p>
-                        <p className="helper-text">Submitted on {new Date(selectedLandlord.submittedAt || selectedLandlord.createdAt).toLocaleDateString('en-ZA')}</p>
-
-                        <label className="field">
-                          <span>Decision note</span>
-                          <textarea rows="4" value={decisionReason} onChange={(event) => setDecisionReason(event.target.value)} placeholder="Add rejection feedback if declining this application." />
-                        </label>
-
-                        <div className="admin-review-actions">
-                          <button className="primary-button" type="button" disabled={submitting} onClick={() => submitDecision(selectedLandlord.id, 'APPROVE', '')}>Approve</button>
-                          <button className="ghost-button" type="button" disabled={submitting} onClick={() => submitDecision(selectedLandlord.id, 'REJECT', decisionReason)}>Reject</button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </section>
-
-              <section className="admin-panel">
-                <div className="section-header compact-header">
-                  <div>
-                    <p className="eyebrow">Recent activity</p>
-                    <h2>Live feed</h2>
-                  </div>
-                </div>
-
-                <div className="activity-feed">
-                  {recentActivity.map((item) => (
-                    <div key={`${item.title}-${item.time}`} className="activity-item">
-                      <div className="activity-dot" aria-hidden="true" />
-                      <div className="activity-copy">
-                        <strong>{item.title}</strong>
-                        <small>{item.actor}</small>
-                      </div>
-                      <div className="activity-meta">
-                        <span className="status-tag neutral-status">{item.status}</span>
-                        <small>{item.time}</small>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </div>
-
-            <section className="admin-panel bottom-panel">
-              <div className="section-header compact-header">
-                <div>
-                  <p className="eyebrow">Operations summary</p>
-                  <h2>Platform health</h2>
-                </div>
-              </div>
-
-              <div className="health-grid">
-                <div className="health-card success">
-                  <span>Active listings</span>
-                  <strong>{dashboard?.totalLandlords ? Math.max(230, dashboard.totalLandlords * 9) : 234}</strong>
-                  <small>Healthy inventory</small>
-                </div>
-                <div className="health-card warning">
-                  <span>Reports open</span>
-                  <strong>19</strong>
-                  <small>Moderation queue</small>
-                </div>
-                <div className="health-card info">
-                  <span>Annualised revenue</span>
-                  <strong>{formatCurrency((dashboard?.monthlyRevenue ?? 0) * 12)}</strong>
-                  <small>Projected</small>
-                </div>
-              </div>
+            <section className="admin-panel">
+              <div className="section-header compact-header"><div><p className="eyebrow">Action required</p><h2>Landlord verification</h2></div><button className="ghost-button small" type="button" onClick={() => setActiveSection('Verification')}>Open review queue ({verifications.length})</button></div>
+              {verifications.length === 0 ? <div className="empty-state"><p>No landlord verification requests are waiting for review.</p></div> : (
+                <div className="table-card"><table><thead><tr><th>Name</th><th>Email</th><th>Submitted</th></tr></thead><tbody>
+                  {verifications.slice(0, 5).map((item) => <tr key={item.id}><td>{item.firstName} {item.lastName}</td><td>{item.email}</td><td>{new Date(item.submittedAt || item.createdAt).toLocaleDateString('en-ZA')}</td></tr>)}
+                </tbody></table></div>
+              )}
             </section>
+            <section className="admin-panel"><div className="section-header compact-header"><div><p className="eyebrow">Subscription operations</p><h2>Plans and account assignments</h2></div><button className="ghost-button small" type="button" onClick={() => setActiveSection('Subscriptions')}>Manage subscriptions</button></div><p>Review existing plans, create new plans, and assign them to a tenant or landlord account.</p></section>
           </>
         )}
+
+        {!loading && activeSection === 'Verification' && (
+          <section className="admin-panel">
+            <div className="section-header compact-header"><div><p className="eyebrow">Verification queue</p><h2>Landlord approvals</h2></div></div>
+            {verifications.length === 0 ? <div className="empty-state"><p>No landlord verification requests at the moment.</p></div> : (
+              <div className="admin-queue-layout">
+                <div className="table-card"><table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Submitted</th></tr></thead><tbody>
+                  {verifications.map((verification) => <tr key={verification.id} className={selectedLandlord?.id === verification.id ? 'selected-review-row' : ''} onClick={() => setSelectedLandlord(verification)}><td>{verification.firstName} {verification.lastName}</td><td>{verification.email}</td><td><span className="status-tag warning">{verification.status}</span></td><td>{new Date(verification.submittedAt || verification.createdAt).toLocaleDateString('en-ZA')}</td></tr>)}
+                </tbody></table></div>
+                {selectedLandlord && <div className="admin-verification-panel"><h3>{selectedLandlord.firstName} {selectedLandlord.lastName}</h3><p>{selectedLandlord.email}</p><p className="helper-text">Submitted on {new Date(selectedLandlord.submittedAt || selectedLandlord.createdAt).toLocaleDateString('en-ZA')}</p><label className="field"><span>Decision note</span><textarea rows="4" value={decisionReason} onChange={(event) => setDecisionReason(event.target.value)} placeholder="A reason is required when rejecting." /></label><div className="admin-review-actions"><button className="primary-button" type="button" disabled={submitting} onClick={() => submitDecision(selectedLandlord.id, 'APPROVE', '')}>Approve</button><button className="ghost-button" type="button" disabled={submitting} onClick={() => submitDecision(selectedLandlord.id, 'REJECT', decisionReason)}>Reject</button></div></div>}
+              </div>
+            )}
+          </section>
+        )}
+
+        {!loading && activeSection === 'Subscriptions' && <AdminSubscriptionsPanel API_BASE_URL={API_BASE_URL} authHeader={authHeader} />}
       </main>
     </div>
   )
 }
 
-function LandlordVerificationStatus({ status, reason, onResubmit, onBack }) {
-  const [idDocument, setIdDocument] = useState(null)
-  const [proofDocument, setProofDocument] = useState(null)
-  const [error, setError] = useState('')
-  const submitResubmission = () => {
-    if (!idDocument || !proofDocument) {
-      setError('Choose both the corrected ID document and proof of residence.')
-      return
-    }
-    onResubmit({ idDocument: idDocument.name, proofDocument: proofDocument.name })
-  }
-
-  return <div className="account-screen"><section className="account-panel"><button className="text-button inline back-link" type="button" onClick={onBack}>← Back to property setup</button><p className="eyebrow">Landlord verification</p><h2>{status === 'VERIFIED' ? 'Your account is verified' : status === 'REJECTED' ? 'Changes requested' : 'Documents under review'}</h2><p className="verification-status-copy">{status === 'VERIFIED' ? 'Your identity and address checks are complete.' : status === 'REJECTED' ? 'Please review the reason below and resubmit corrected documents.' : 'Your submitted documents are in the admin verification queue.'}</p><div className={`verification-result ${status.toLowerCase()}`}><ShieldCheck size={22} /><strong>{status}</strong></div>{status === 'REJECTED' && <div className="rejection-reason"><strong>Admin review reason</strong><p>{reason}</p><label className="field"><span>Corrected ID document *</span><input type="file" accept="image/*,.pdf" onChange={(event) => setIdDocument(event.target.files?.[0] || null)} /></label><label className="field"><span>Corrected proof of residence *</span><input type="file" accept="image/*,.pdf" onChange={(event) => setProofDocument(event.target.files?.[0] || null)} /></label>{error && <p className="location-error" role="alert">{error}</p>}<button className="primary-button" type="button" onClick={submitResubmission}>Resubmit documents</button></div>}</section></div>
+function LandlordVerificationStatus({ status, reason, onBack }) {
+  return <div className="account-screen"><section className="account-panel"><button className="text-button inline back-link" type="button" onClick={onBack}>← Back to property setup</button><p className="eyebrow">Landlord verification</p><h2>{status === 'VERIFIED' ? 'Your account is verified' : status === 'REJECTED' ? 'Changes requested' : 'Your account is awaiting review'}</h2><p className="verification-status-copy">{status === 'VERIFIED' ? 'An administrator approved your landlord account.' : status === 'REJECTED' ? 'An administrator requested changes to your verification.' : 'Your landlord account is in the admin verification queue.'}</p><div className={`verification-result ${status.toLowerCase()}`}><ShieldCheck size={22} /><strong>{status}</strong></div>{status === 'REJECTED' && <div className="rejection-reason"><strong>Admin review reason</strong><p>{reason || 'Contact UMQASHO support for next steps.'}</p></div>}<p className="helper-text">Identity document uploads are not available in this version. Do not treat an account as verified until an administrator confirms it.</p></section></div>
 }
 
-function LandlordFlow({ onOpenVerification, onOpenInterestedTenants, interestCount, verificationStatus, verificationReason, onResubmit, onSubmitDocuments }) {
+function LandlordFlow({ initialStep = 0, onOpenVerification, onOpenInterestedTenants, interestCount, verificationStatus, verificationReason, onRegistrationComplete }) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8082'
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(initialStep)
   const [isPublished, setIsPublished] = useState(false)
   const [propertyPhotos, setPropertyPhotos] = useState([])
-  const [rooms, setRooms] = useState(() => roomCards.map((room) => ({
-    id: room.id,
-    name: room.title,
-    type: 'Private Room',
-    description: '',
-    rent: Number(room.rent.replace(/[^0-9]/g, '')),
-    deposit: Number(room.rent.replace(/[^0-9]/g, '')),
-    bathroom: 'Shared',
-    kitchen: 'Shared',
-    furnished: 'Furnished',
-    electricity: 'Prepaid',
-    water: 'Included',
-    wifi: 'Available',
-    parking: 'Not included',
-    photos: [],
-    availability: room.status === 'Rented' ? 'Rented' : 'Available now',
-  })))
+  const [rooms, setRooms] = useState([])
+  const [registrationError, setRegistrationError] = useState('')
+  const [registering, setRegistering] = useState(false)
   const [form, setForm] = useState({
-    firstName: 'Thabo',
-    lastName: 'Mokoena',
-    email: 'thabo@uqasho.co.za',
-    phone: '+27 71 234 5678',
-    password: 'StrongPass123!',
-    confirmPassword: 'StrongPass123!',
-    landlordType: 'Property Owner',
-    businessName: '',
-    businessInfo: '',
-    province: 'Gauteng',
-    city: 'Tembisa',
-    area: 'Moleleki',
-    agreed: true,
-    propertyName: 'Thabo Tembisa Home',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    province: '',
+    city: '',
+    area: '',
+    agreed: false,
+    propertyName: '',
     propertyType: 'House',
-    description: 'Modern family home with secure access, safe neighbourhood, and shared garden space.',
+    description: '',
     locationVisibility: 'Approximate location',
     latitude: null,
     longitude: null,
     confirmedAddress: '',
     locationConfirmed: false,
+    nearbyInformation: [],
     amenities: ['Wi-Fi', 'Parking', 'Security', 'Water', 'Electricity'],
   })
 
@@ -1516,18 +1396,34 @@ function LandlordFlow({ onOpenVerification, onOpenInterestedTenants, interestCou
   const goBack = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const handleRegisterLandlord = async () => {
+    setRegistrationError('')
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.phone.trim() || !form.password) {
+      setRegistrationError('Complete all required account fields.')
+      return
+    }
+
     if (!form.agreed) {
-      alert('Please accept the terms and privacy policy before creating your account.')
+      setRegistrationError('Accept the Terms and Privacy Policy before creating your account.')
       return
     }
 
     if (form.password !== form.confirmPassword) {
-      alert('Passwords do not match. Please confirm the same password.')
+      setRegistrationError('Passwords do not match.')
       return
     }
 
-    const cleanPhone = form.phone.replace(/\s+/g, '')
+    const cleanPhone = form.phone.replace(/[\s-]/g, '')
+    if (!/^(?:\+?27\s?0?[6-8](?:[0-9][\s-]?){7}[0-9]|0[6-8](?:[0-9][\s-]?){7}[0-9])$/.test(form.phone.trim())) {
+      setRegistrationError('Enter a valid South African mobile number, for example 071 234 5678 or +27 71 234 5678.')
+      return
+    }
 
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,72}$/.test(form.password)) {
+      setRegistrationError('Use a password of 8-72 characters with uppercase, lowercase, number, and symbol.')
+      return
+    }
+
+    setRegistering(true)
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register/landlord`, {
         method: 'POST',
@@ -1538,24 +1434,27 @@ function LandlordFlow({ onOpenVerification, onOpenInterestedTenants, interestCou
           email: form.email.trim(),
           phone: cleanPhone,
           password: form.password,
-          preferredArea: form.area.trim(),
-          businessName: form.businessName?.trim() || form.landlordType,
         }),
       })
 
-      const payload = await response.text()
       if (!response.ok) {
-        throw new Error(payload || 'Landlord registration failed.')
+        throw new Error(response.status === 409
+          ? 'An account with this email already exists. Log in or use a different email.'
+          : response.status === 400
+            ? 'Check your details. Use a valid South African phone number and a strong password.'
+            : 'Unable to create the landlord account. Please try again.')
       }
 
-      const createdUser = payload ? JSON.parse(payload) : null
-      onSubmitDocuments({ idDocument: form.idDocument || '', proofDocument: form.proofDocument || '' })
+      const createdUser = await response.json()
+      onRegistrationComplete(createdUser)
       if (createdUser?.email) {
         setForm((current) => ({ ...current, email: createdUser.email }))
       }
       goNext()
     } catch (error) {
-      alert(error.message || 'Unable to create the landlord account. Please try again.')
+      setRegistrationError(error.message || 'Unable to create the landlord account. Please try again.')
+    } finally {
+      setRegistering(false)
     }
   }
 
@@ -1566,9 +1465,9 @@ function LandlordFlow({ onOpenVerification, onOpenInterestedTenants, interestCou
 
     switch (currentStep) {
       case 0:
-        return <RegisterStep onContinue={handleRegisterLandlord} form={form} setForm={setForm} />
+        return <RegisterStep onContinue={handleRegisterLandlord} form={form} setForm={setForm} error={registrationError} submitting={registering} />
       case 1:
-        return <AccountSuccessStep onContinue={goNext} />
+        return <AccountSuccessStep onContinue={goNext} firstName={form.firstName} />
       case 2:
         return <VerificationStep onContinue={goNext} />
       case 3:
@@ -1596,7 +1495,7 @@ function LandlordFlow({ onOpenVerification, onOpenInterestedTenants, interestCou
           <p>Premium landlord onboarding made simple, secure, and trust-building from the first step.</p>
         </div>
         <div className="hero-badges">
-          <span><ShieldCheck size={14} /> Verified</span>
+          <span><ShieldCheck size={14} /> {verificationStatus === 'VERIFIED' ? 'Verified' : 'Verification pending'}</span>
           <span><Sparkles size={14} /> Premium flow</span>
           <button className="ghost-button small" type="button" onClick={onOpenInterestedTenants}><Star size={14} /> Interested Tenants ({interestCount})</button>
           <button className="ghost-button small" type="button" onClick={onOpenVerification}>Verification status: {verificationStatus}</button>
@@ -1686,6 +1585,7 @@ function App() {
   const [screen, setScreen] = useState('public')
   const [role, setRole] = useState('tenant')
   const [authenticated, setAuthenticated] = useState(false)
+  const [landlordInitialStep, setLandlordInitialStep] = useState(0)
   const [selectedListingId, setSelectedListingId] = useState(publicListings[0].id)
   const [pendingAction, setPendingAction] = useState(null)
   const [resumeAction, setResumeAction] = useState(null)
@@ -1693,7 +1593,6 @@ function App() {
   const [loginForm, setLoginForm] = useState({ email: 'tenant-login@example.com', password: 'Password@123' })
   const [verificationStatus, setVerificationStatus] = useState('PENDING')
   const [verificationReason, setVerificationReason] = useState('')
-  const [submittedDocuments, setSubmittedDocuments] = useState({ idDocument: '', proofDocument: '' })
   const [allowLandlordContact, setAllowLandlordContact] = useState(false)
   const [savedListingIds, setSavedListingIds] = useState([])
   const [interestedTenants, setInterestedTenants] = useState([])
@@ -1754,6 +1653,37 @@ function App() {
     setScreen('tenant-dashboard')
   }
 
+  const handleTenantRegistration = async (formData) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register/tenant`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: formData.get('firstName')?.toString().trim(),
+        lastName: formData.get('lastName')?.toString().trim(),
+        email: formData.get('email')?.toString().trim(),
+        phone: formData.get('phone')?.toString().replace(/[\s-]/g, ''),
+        password: formData.get('password')?.toString(),
+      }),
+    })
+
+    if (!response.ok) {
+      const message = response.status === 409
+        ? 'An account with this email already exists. Log in or use a different email.'
+        : response.status === 400
+          ? 'Check your details. Use a valid South African phone number and a password with uppercase, lowercase, number, and symbol.'
+          : 'Unable to create your account. Please try again.'
+      throw new Error(message)
+    }
+
+    const user = await response.json()
+    if (user.role !== 'TENANT') {
+      throw new Error('The account was created, but tenant access could not be confirmed. Please log in.')
+    }
+
+    setRole('tenant')
+    completeTenantAuth()
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -1778,6 +1708,9 @@ function App() {
           throw new Error('This account is not available for landlord access.')
         }
 
+        setVerificationStatus(user.status === 'ACTIVE' ? 'VERIFIED' : 'PENDING')
+        setVerificationReason('')
+        setLandlordInitialStep(3)
         setAuthenticated(true)
         setScreen('landlord-flow')
         return
@@ -1855,7 +1788,7 @@ function App() {
   }
 
   if (screen === 'tenant-register') {
-    return <TenantRegistration onSubmit={(event) => { event.preventDefault(); completeTenantAuth() }} onLogin={() => { setRole('tenant'); setScreen('login') }} onBrowse={() => setScreen(pendingAction ? 'public-detail' : 'public')} />
+    return <TenantRegistration onSubmit={handleTenantRegistration} onLogin={() => { setRole('tenant'); setScreen('login') }} onBrowse={() => setScreen(pendingAction ? 'public-detail' : 'public')} />
   }
 
   if (screen === 'login') {
@@ -1865,7 +1798,7 @@ function App() {
       credentials={loginForm}
       onFieldChange={(field, value) => setLoginForm((current) => ({ ...current, [field]: value }))}
       onLogin={handleLogin}
-      onCreateAccount={() => setScreen(role === 'landlord' ? 'landlord-flow' : 'tenant-register')}
+      onCreateAccount={() => { if (role === 'landlord') setLandlordInitialStep(0); setScreen(role === 'landlord' ? 'landlord-flow' : 'tenant-register') }}
       onGuestBrowse={() => setScreen('public')}
     />
   }
@@ -1883,10 +1816,10 @@ function App() {
   }
 
   if (screen === 'landlord-verification') {
-    return <LandlordVerificationStatus status={verificationStatus} reason={verificationReason} onBack={() => setScreen('landlord-flow')} onResubmit={(documents) => { setSubmittedDocuments(documents); setVerificationStatus('PENDING'); setVerificationReason(''); setScreen('landlord-flow') }} />
+    return <LandlordVerificationStatus status={verificationStatus} reason={verificationReason} onBack={() => setScreen('landlord-flow')} />
   }
 
-  return <LandlordFlow onOpenVerification={() => setScreen('landlord-verification')} onOpenInterestedTenants={() => setScreen('landlord-interests')} interestCount={interestedTenants.length} verificationStatus={verificationStatus} verificationReason={verificationReason} onSubmitDocuments={setSubmittedDocuments} onResubmit={() => { setVerificationStatus('PENDING'); setVerificationReason('') }} />
+  return <LandlordFlow initialStep={landlordInitialStep} onOpenVerification={() => setScreen('landlord-verification')} onOpenInterestedTenants={() => setScreen('landlord-interests')} interestCount={interestedTenants.length} verificationStatus={verificationStatus} verificationReason={verificationReason} onRegistrationComplete={(user) => { setVerificationStatus(user.status === 'ACTIVE' ? 'VERIFIED' : 'PENDING'); setVerificationReason('') }} />
 }
 
 createRoot(document.getElementById('root')).render(
