@@ -1067,9 +1067,15 @@ function TenantRegistration({ onSubmit, onLogin, onBrowse }) {
   const submitRegistration = async (event) => {
     event.preventDefault()
     setError('')
+    const formData = new FormData(event.currentTarget)
+    if (formData.get('password') !== formData.get('confirmPassword')) {
+      setError('Passwords do not match. Please enter the same password in both fields.')
+      return
+    }
+
     setSubmitting(true)
     try {
-      await onSubmit(new FormData(event.currentTarget))
+      await onSubmit(formData)
     } catch (registrationError) {
       setError(registrationError.message || 'Unable to create your account. Please try again.')
     } finally {
@@ -1089,6 +1095,7 @@ function TenantRegistration({ onSubmit, onLogin, onBrowse }) {
           <label className="field"><span>Email *</span><input required name="email" type="email" autoComplete="email" /></label>
           <label className="field"><span>Phone *</span><input required name="phone" type="tel" pattern="^(?:\\+?27\\s?0?[6-8](?:[0-9][\\s-]?){7}[0-9]|0[6-8](?:[0-9][\\s-]?){7}[0-9])$" title="Enter a valid South African mobile number, for example 071 234 5678 or +27 71 234 5678" autoComplete="tel" /></label>
           <label className="field"><span>Password *</span><input required name="password" type="password" minLength="8" maxLength="72" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,72}" title="Use 8-72 characters with uppercase, lowercase, number, and symbol" autoComplete="new-password" /></label>
+          <label className="field"><span>Confirm password *</span><input required name="confirmPassword" type="password" minLength="8" maxLength="72" autoComplete="new-password" /></label>
         </div>
         <p className="helper-text">Your account details are saved now. Rental preferences can be added after profile setup is available.</p>
         <label className="checkbox-row tenant-terms"><input type="checkbox" required /><span>I accept the Terms and Privacy Policy.</span></label>
